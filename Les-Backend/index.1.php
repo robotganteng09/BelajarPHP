@@ -11,7 +11,7 @@
     //set zona waktu
     date_default_timezone_set('Asia/Jakarta');
     $currentDate = date('Y-m-d');
-    $currentTIme = date('H:i:s');
+    $currentTIme = date('Y-m-d H:i:s');
 
     echo("tanggal saat ini adalah: $currentDate <br>");
     echo("waktu saat ini adalah: $currentTIme <br>");
@@ -49,7 +49,33 @@
      //format selisih waktu dalam hari
      echo($interval -> format("%m bulan %d hari"). "<br>");
      echo("hari ini :" . date("l") . "<br>");
-     echo("bulan ini :" .date("F"))
+     echo("bulan ini :" .date("F"));
+    
+     
+     
     ?>
+    <p id="clock"><?php
+    $currentTIme;
+    echo($currentTIme);
+    ?></p>
+    <script>
+    
+    let currentTime = new Date("<?= $currentTime ?>");
+    function updateClock() {
+        // Tambahkan 1 detik
+        currentTime.setSeconds(currentTime.getSeconds() + 1);
+        // Format ke YYYY-MM-DD HH:MM:SS
+        let year = currentTime.getFullYear();
+        let month = String(currentTime.getMonth() + 1).padStart(2, '0');
+        let day = String(currentTime.getDate()).padStart(2, '0');
+        let hours = String(currentTime.getHours()).padStart(2, '0');
+        let minutes = String(currentTime.getMinutes()).padStart(2, '0');
+        let seconds = String(currentTime.getSeconds()).padStart(2, '0');
+        document.getElementById("clock").innerText =
+            `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+    // Perbarui jam setiap detik
+    setInterval(updateClock, 1000);
+    </script>
 </body>
 </html>
