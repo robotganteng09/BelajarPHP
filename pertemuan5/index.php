@@ -37,7 +37,7 @@ while ($blog = mysqli_fetch_assoc($queryBlog)) {
 
   <table class="table table-striped">
     <thead>
-      <tr>
+      <tr> 
         <th>
           judul
         </th>
@@ -73,8 +73,10 @@ while ($blog = mysqli_fetch_assoc($queryBlog)) {
             <?= $blog["kategori"] ?>
           </td>
           <td>
-            hapus
+            <a href="hapus.php? id=<?php echo $blog["id"];?>" class="btn btn-danger" onclick="return confirm('Are you sure delete it?')">Hapus</a>
+            <a href="edit.php? id=<?php echo $blog["id"];?>" class="btn btn-warning">edit</a>
           </td>
+          
         </tr>
       <?php endforeach; ?>
     </tbody>
