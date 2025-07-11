@@ -3,25 +3,52 @@ include_once("config.php");
 
 if(isset($_POST["submit"])){
     $judul =htmlspecialchars($_POST["judul"]); //htmlspecialchar digunakan agar data yang ditampilkan ke dalam browser aman
-    $gambar = $_FILES["gambar"]["name"];
+    $gambar = $_FILES["gambar"];
     $isi = htmlspecialchars($_POST["isi"]);
     $kategori = $_POST["kategori"];
-   
-    $queryPost = "INSERT INTO blog VALUES('','$judul','$gambar','$isi','$kategori')";
-    mysqli_query($conection,$queryPost);
-    if(mysqli_query($conection,$queryPost)){
-        echo "<script>
-                alert('berhasil disimpan')
-            </script>";
-            if(mysqli_affected_rows($conection) >0){
-                header("Location: index.php");
-            }
+    if($gambar['error'] !== UPLOAD_ERR_OK){
+      echo("eror upload gambar");
     } else {
-        echo "<script>
-                alert('gagal disimpan')
-            </script>";
-    }
+        $filename = $gambar['name'];
+        $filesize = $gambar['size'];
+        $filetype = $gambar['type'];
+        $filetemporary = $gambar['tmp_name'];
+       $allowedextensions = array("image/jpeg","image/jpg","image/png","image/gif");
+       $maxfile = 5*1024*1024;
+       if(!in_array($filetype,$allowedextensions)){
+        echo("invalid file type");
+       } elseif($filesize > $maxfile){
+        echo("maxfile is to large");
+       } else {
+        $unik_filename = uniqid().'_'.$filename;
+        $upload_path = "img/";
+        $destination = $upload_path.$unik_filename;
 
+        echo($destination); "<br>";
+
+        echo($filetemporary);
+        
+        
+        if(move_uploaded_file($filetemporary,$destination)){
+            $queryPost ="INSERT INTO blog (judul,gambar,isi,kategori) VALUES('$judul','$destination','$isi','$kategori')";
+            mysqli_query($conection,$queryPost);
+                if (mysqli_query($conection, $queryPost)) {
+                    echo "<script>
+                        alert('berhasil disimpan')
+                    </script>";
+                    if (mysqli_affected_rows($conection) > 0) {
+                        header("Location: index.php");
+                    }
+                } else {
+                    echo "<script>
+                        alert('gagal disimpan')
+                    </script>";
+                }
+            }
+       }
+    }
+   
+  
 } 
 
 ?>

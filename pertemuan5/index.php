@@ -2,7 +2,7 @@
 include_once("config.php");
 
 $blogs = [];
-$keyword = isset($_GET['cari']) ? mysqli_real_escape_string($conn, $_GET['cari']) : '';
+$keyword = isset($_GET['cari']) ? mysqli_real_escape_string($conection, $_GET['cari']) : '';
 // mysqli_real_escape_string berfungsi untuk menghalangi sql injection untuk keamanan
 if ($keyword) {
   $queryBlog = mysqli_query($conection, "SELECT * FROM blog WHERE judul LIKE '%$keyword%' OR isi LIKE '%$keyword%' OR kategori LIKE '%$keyword%'");
@@ -28,16 +28,21 @@ while ($blog = mysqli_fetch_assoc($queryBlog)) {
 <body>
   <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+      <form class="d-flex" method="$_GET">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="cari" value="<?= isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : "" ?>" />
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
     </div>
   </nav>
 
+
+  <?php if ($keyword): ?>
+    <p>Menampilkan hasil pencarian untuk: <strong><?= htmlspecialchars($keyword) ?></strong></p>
+  <?php endif; ?>
+
   <table class="table table-striped">
     <thead>
-      <tr> 
+      <tr>
         <th>
           judul
         </th>
@@ -64,7 +69,7 @@ while ($blog = mysqli_fetch_assoc($queryBlog)) {
             <?= $blog["judul"] ?>
           </td>
           <td>
-            <?= $blog["gambar"] ?>
+            <img src="<?php echo $blog["gambar"]; ?>" alt="<?php echo $blog["gambar"]; ?>" width="150">
           </td>
           <td>
             <?= $blog["isi"] ?>
@@ -73,10 +78,10 @@ while ($blog = mysqli_fetch_assoc($queryBlog)) {
             <?= $blog["kategori"] ?>
           </td>
           <td>
-            <a href="hapus.php? id=<?php echo $blog["id"];?>" class="btn btn-danger" onclick="return confirm('Are you sure delete it?')">Hapus</a>
-            <a href="edit.php? id=<?php echo $blog["id"];?>" class="btn btn-warning">edit</a>
+            <a href="hapus.php? id=<?php echo $blog["id"]; ?>" class="btn btn-danger" onclick="return confirm('Are you sure delete it?')">Hapus</a>
+            <a href="edit.php? id=<?php echo $blog["id"]; ?>" class="btn btn-warning">edit</a>
           </td>
-          
+
         </tr>
       <?php endforeach; ?>
     </tbody>
